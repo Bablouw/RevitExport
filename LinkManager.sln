@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkManager", "LinkManager\LinkManager.csproj", "{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		2023|Any CPU = 2023|Any CPU
+		2024|Any CPU = 2024|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		R2021|Any CPU = R2021|Any CPU
+		R2022|Any CPU = R2022|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}.2023|Any CPU.ActiveCfg = R2021|Any CPU
+		{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}.2023|Any CPU.Build.0 = R2021|Any CPU
+		{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}.2024|Any CPU.ActiveCfg = R2021|Any CPU
+		{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}.2024|Any CPU.Build.0 = R2021|Any CPU
+		{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}.R2021|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}.R2021|Any CPU.Build.0 = Debug|Any CPU
+		{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}.R2022|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}.R2022|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9CC195D0-4B6C-453A-9DB7-B77DDB1DF798}
+	EndGlobalSection
+EndGlobal

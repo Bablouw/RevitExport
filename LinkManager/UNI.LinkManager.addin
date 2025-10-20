@@ -1,0 +1,10 @@
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>ListManager</Name>
+		<Assembly>.\UNITOOLS\LinkManager\LinkManager.dll</Assembly>
+		<FullClassName>ListManager.Application</FullClassName>
+		<AddInId>25D62431-02AA-4311-B1F4-D99591C44F82</AddInId>
+		<VendorId>Unipro</VendorId>
+		<VendorDescription>Unipro</VendorDescription>
+	</AddIn>
+</RevitAddIns>

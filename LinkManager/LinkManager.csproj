@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LinkManager</RootNamespace>
+    <AssemblyName>LinkManager</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'R2021|AnyCPU' ">
+    <OutputPath>bin\R2021\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <AssemblyName>$(AssemblyName)</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'R2022|AnyCPU' ">
+    <OutputPath>bin\R2022\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <AssemblyName>$(AssemblyName)</AssemblyName>
+  </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'R2023|AnyCPU' ">
+		<OutputPath>bin\R2022\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+		<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+		<AssemblyName>$(AssemblyName)</AssemblyName>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'R2024|AnyCPU' ">
+		<OutputPath>bin\R2022\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+		<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+		<AssemblyName>$(AssemblyName)</AssemblyName>
+	</PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Application.cs" />
+    <Compile Include="LinkManager.cs" />
+    <Compile Include="Models\LinkModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\LinkService.cs" />
+    <Compile Include="Services\LogService.cs" />
+    <Compile Include="Services\ModelService.cs" />
+    <Compile Include="Services\ParseCsvService.cs" />
+    <Compile Include="Services\ParseDBService.cs" />
+  </ItemGroup>
+  <Choose>
+    <When Condition=" '$(Configuration)'=='R2021' or '$(Configuration)'=='Debug' ">
+      <ItemGroup>
+        <PackageReference Include="Revit_API_x64">
+          <Version>2021.0.0</Version>
+          <ExcludeAssets>runtime</ExcludeAssets>
+        </PackageReference>
+      </ItemGroup>
+    </When>
+    <When Condition=" '$(Configuration)'=='R2022' ">
+      <ItemGroup>
+        <PackageReference Include="Revit_API_x64">
+          <Version>2022.0.0</Version>
+          <ExcludeAssets>runtime</ExcludeAssets>
+        </PackageReference>
+      </ItemGroup>
+    </When>
+	<When Condition=" '$(Configuration)'=='R2023' ">
+      <ItemGroup>
+        <PackageReference Include="Revit_API_x64">
+          <Version>2023.0.0</Version>
+          <ExcludeAssets>runtime</ExcludeAssets>
+        </PackageReference>
+      </ItemGroup>
+    </When>
+	  <When Condition=" '$(Configuration)'=='R2024' ">
+		  <ItemGroup>
+			  <PackageReference Include="Revit_API_x64">
+				  <Version>2024.0.0</Version>
+				  <ExcludeAssets>runtime</ExcludeAssets>
+			  </PackageReference>
+		  </ItemGroup>
+	  </When>
+  </Choose>
+  <ItemGroup>
+    <None Include="UNI.LinkManager.addin" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite">
+      <Version>9.0.10</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

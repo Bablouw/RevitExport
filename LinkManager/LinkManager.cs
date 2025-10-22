@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 namespace LinkManager
 {
     [Autodesk.Revit.Attributes.TransactionAttribute(Autodesk.Revit.Attributes.TransactionMode.Manual)]
-    public class LinkManagerCommand : IExternalCommand
+    public class LinkManagerCommand 
     {
         static AddInId addinId = new AddInId(new Guid("E05C11B3-8333-49D0-A46C-09790E8D5387"));
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public Result Execute(Document doc)
         {
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
+            //UIDocument uidoc = commandData.Application.ActiveUIDocument;
+            //Document doc = uidoc.Document;
             ParseCsvService parseCsvService = new ParseCsvService();
             ParseDBService parseDBService = new ParseDBService();
             LinkService linkService = new LinkService();
@@ -28,9 +28,10 @@ namespace LinkManager
             //1 Парсинг пути к CSV
             string modelName = modelService.GetModelName(doc);
             string mappingTablePath = parseDBService.GetModelMappingPath(modelName);
-            LogService.Initialize(mappingTablePath);
+
+            LogService.Initialize(Path.GetDirectoryName(mappingTablePath));
             LogService.LogError($"Отчет о работе плагина с модель {modelName}");
-            mappingTablePath =  mappingTablePath + "\\test.csv";
+            //mappingTablePath =  mappingTablePath + "\\test.csv";
             //2 Парсинг списка моделей и РН из CSV
             List<LinkModel> parsedLinksModels = new List<LinkModel> (parseCsvService.ParseCsv(mappingTablePath));
             //3 Парсинг путей к моделям

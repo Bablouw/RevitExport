@@ -2,8 +2,8 @@
 	<AddIn Type="Application">
 		<Name>ListManager</Name>
 		<Assembly>.\UNITOOLS\LinkManager\LinkManager.dll</Assembly>
-		<FullClassName>ListManager.Application</FullClassName>
-		<AddInId>25D62431-02AA-4311-B1F4-D99591C44F82</AddInId>
+		<FullClassName>ListManager.ModelCleaner</FullClassName>
+		<AddInId>E05C11B3-8333-49D0-A46C-09790E8D5387</AddInId>
 		<VendorId>Unipro</VendorId>
 		<VendorDescription>Unipro</VendorDescription>
 	</AddIn>

@@ -52,11 +52,11 @@ namespace LinkManager.Services
             }
             catch (IOException ex)
             {
-                LogService.LogError("Ошибка чтения CSV");
+                LogService.LogError($"Ошибка чтения CS: {ex}");
             }
             catch (Exception ex)
             {
-                LogService.LogError("Ошибка при обработки CSV");
+                LogService.LogError($"Ошибка при обработки CSV:{ex}");
             }
 
             return parsedLinks;

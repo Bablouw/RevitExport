@@ -66,7 +66,7 @@ namespace LinkManager.Services
                 }
                 catch (Exception ex)
                 {
-                    LogService.LogError($"Ошибка при загрузке модели {link.linkName}");
+                    LogService.LogError($"Ошибка при загрузке модели {link.linkName}\n {ex}");
                     trans.RollBack();
                 }
             }

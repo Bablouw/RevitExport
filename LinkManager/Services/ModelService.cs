@@ -17,6 +17,7 @@ namespace LinkManager.Services
             ModelPath centralModelPath = doc.GetWorksharingCentralModelPath();
             if (centralModelPath == null || centralModelPath.Empty)
             {
+                //LogService.LogError("Возможно модель отсоеденена");
                 //TaskDialog.Show("Ошибка", "Центральная модель не найдена (возможно, модель detached).");
                 return string.Empty;
             }
@@ -25,7 +26,7 @@ namespace LinkManager.Services
             string centralFullPath = ModelPathUtils.ConvertModelPathToUserVisiblePath(centralModelPath);
             if (string.IsNullOrEmpty(centralFullPath))
             {
-               // TaskDialog.Show("Ошибка", "Не удалось получить путь центральной модели.");
+                //LogService.LogError("Не удалось получить путь центральной модели.");
                 return string.Empty;
             }
 
@@ -38,7 +39,7 @@ namespace LinkManager.Services
         {
             if (!doc.IsWorkshared)
             {
-                throw new Exception("Проект не использует рабочие наборы.");
+                LogService.LogError("Проект не использует рабочие наборы.");
             }
 
             // Собираем все RevitLinkInstance
@@ -88,7 +89,7 @@ namespace LinkManager.Services
                             // Добавляем новый рабочий набор в список (для последующих итераций, если нужно)
                             worksets.Add(targetWorkset);
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             continue; // Или throw ex, в зависимости от нужной логики
                         }
@@ -132,7 +133,7 @@ namespace LinkManager.Services
                 }
                 catch (Exception ex)
                 {
-                    LogService.LogError("Ошибка закрепления Осей");
+                    LogService.LogError($"Ошибка закрепления Осей: {ex}");
                     trans.RollBack();
                 }
             }
@@ -165,7 +166,7 @@ namespace LinkManager.Services
                 }
                 catch (Exception ex)
                 {
-                    LogService.LogError("Ошибка закрепления уровней");
+                    LogService.LogError($"Ошибка закрепления уровней {ex}");
                     trans.RollBack();
                 }
             }
@@ -197,7 +198,7 @@ namespace LinkManager.Services
                 }
                 catch (Exception ex)
                 {
-                    LogService.LogError("Ошибка закрепления связей");
+                    LogService.LogError($"Ошибка закрепления связей: {ex}");
                     trans.RollBack();
                 }
             }

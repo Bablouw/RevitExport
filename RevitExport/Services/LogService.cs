@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LinkManager.Services
+namespace RevitExport.Services
 {
     public static class LogService
     {

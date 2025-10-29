@@ -1,0 +1,10 @@
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>RevitExport</Name>
+		<Assembly>.\UNITOOLS\RevitExport\RevitExport.dll</Assembly>
+		<FullClassName>RevitExport.ModelCleaner</FullClassName>
+		<AddInId>D57F4F16-01B6-486D-B12E-494A12E24452</AddInId>
+		<VendorId>Unipro</VendorId>
+		<VendorDescription>Unipro</VendorDescription>
+	</AddIn>
+</RevitAddIns>

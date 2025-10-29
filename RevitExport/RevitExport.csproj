@@ -7,8 +7,8 @@
     <ProjectGuid>{B5AECFBE-CA8C-4E27-9367-6F83D3F65D7C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinkManager</RootNamespace>
-    <AssemblyName>LinkManager</AssemblyName>
+    <RootNamespace>RevitExport</RootNamespace>
+    <AssemblyName>RevitExport</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -57,6 +57,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -65,17 +66,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application - Копировать.cs" />
     <Compile Include="Application.cs" />
-    <Compile Include="LinkManager.cs" />
-    <Compile Include="Models\LinkModel.cs" />
+    <Compile Include="RevitExport.cs" />
     <Compile Include="Models\NewDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\LinkService.cs" />
     <Compile Include="Services\LogService.cs" />
     <Compile Include="Services\ModelService.cs" />
-    <Compile Include="Services\ParseCsvService.cs" />
     <Compile Include="Services\ParseDBService.cs" />
+    <Compile Include="Services\UpdateProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services\UpdateProgressForm.Designer.cs">
+      <DependentUpon>UpdateProgressForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Choose>
     <When Condition=" '$(Configuration)'=='R2021' or '$(Configuration)'=='Debug' ">
@@ -112,12 +116,17 @@
     </When>
   </Choose>
   <ItemGroup>
-    <None Include="UNI.LinkManager.addin" />
+    <None Include="UNI.RevitExport.addin" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite">
       <Version>9.0.10</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Services\UpdateProgressForm.resx">
+      <DependentUpon>UpdateProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

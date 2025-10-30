@@ -123,9 +123,20 @@ namespace RevitExport
                     //2.1 Преобразовываем пути
                     ModelPath modelPath;
                     ModelPath modelPathExport;
+                    LogService.LogError($"Путь к модели : {model.model_path}");
                     modelPath = ModelPathUtils.ConvertUserVisiblePathToModelPath(model.model_path);
                     modelPathExport = ModelPathUtils.ConvertUserVisiblePathToModelPath(model.export_path + model.rvt_model_name);
                     LogService.LogError("2.1");
+
+                    if (app == null)
+                    {
+                        LogService.LogError("app null");
+                    }
+                    LogService.LogError($"{modelPath}");
+                    if (modelPath == null)
+                    {
+                        LogService.LogError("Modelpath- пусто ");
+                    }
                     //2.2 Открытие отсоединенной модели
                     doc = modelService.OpenDocumentDetach(app, modelPath);
                     if (doc == null)

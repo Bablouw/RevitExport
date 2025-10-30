@@ -31,7 +31,7 @@ namespace RevitExport
             Application app = sender as Application;
             
             //Document doc = null;
-            LogService.Initialize("C:\\Test_download");
+            LogService.Initialize("C:\\RevitExportTest");
             LogService.LogError("инициализация прошла");
             RevitExportCommand revitExport = new RevitExportCommand();
             revitExport.ExecuteScript(app);

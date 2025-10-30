@@ -12,46 +12,51 @@ namespace RevitExport.Services
     {
         private const string ConnectionString = @"Data Source=C:\RevitExportTest\ExportDB.db";
 
-        public List<NewDocument> GetExportModels ()
+        public List<NewDocument> GetExportModels(int RVTversion)
         {
-            List <NewDocument> models = new List <NewDocument> ();
+            List<NewDocument> models = new List<NewDocument>();
 
             SqliteConnection connection = null;
             SqliteCommand command = null;
             SqliteDataReader reader = null;
+
             try
             {
                 connection = new SqliteConnection(ConnectionString);
                 connection.Open();
 
                 const string query = @"
-                    SELECT is_export, rvt_model_name, rvt_version, export_path, model_path 
-                    FROM revit_export
-                    WHERE is_export = 1";
+        SELECT is_export, rvt_model_name, rvt_version, export_path, model_path 
+        FROM revit_export
+        WHERE is_export = 1 AND rvt_version = @RVTversion";
+
                 command = new SqliteCommand(query, connection);
+                command.Parameters.AddWithValue("@RVTversion", RVTversion); // ✅ добавляем после создания команды
+
                 reader = command.ExecuteReader();
 
                 while (reader.Read())
                 {
                     var document = new NewDocument
                     {
-                        IsExport = reader.GetInt32(reader.GetOrdinal("is_export")),
+                        is_export = reader.GetInt32(reader.GetOrdinal("is_export")),
                         rvt_model_name = reader.GetString(reader.GetOrdinal("rvt_model_name")),
                         rvt_version = reader.GetInt32(reader.GetOrdinal("rvt_version")),
                         export_path = reader.IsDBNull(reader.GetOrdinal("export_path"))
-                        ? null
-                        : reader.GetString(reader.GetOrdinal("export_path")),
+                            ? null
+                            : reader.GetString(reader.GetOrdinal("export_path")),
                         model_path = reader.IsDBNull(reader.GetOrdinal("model_path"))
-                           ? null
-                           : reader.GetString(reader.GetOrdinal("model_path"))
+                            ? null
+                            : reader.GetString(reader.GetOrdinal("model_path"))
                     };
                     models.Add(document);
                 }
-                return models; 
+
+                return models;
             }
             catch (SqliteException ex)
             {
-                LogService.LogError("Не удалось подключиться к БД" + ex);
+                LogService.LogError("Не удалось подключиться к БД: " + ex);
                 return new List<NewDocument>();
             }
             catch (Exception ex)
@@ -61,6 +66,8 @@ namespace RevitExport.Services
             }
             finally
             {
+                if (reader != null)
+                    reader.Close();
                 if (command != null)
                     command.Dispose();
                 if (connection != null)
@@ -68,5 +75,43 @@ namespace RevitExport.Services
             }
         }
 
+
+        public void ReturnZeroExport()
+        {
+            SqliteConnection connection = null;
+            SqliteTransaction transaction = null;
+            try
+            {
+                connection = new SqliteConnection(ConnectionString);
+                connection.Open();
+
+                transaction = connection.BeginTransaction();
+
+                // 1. Сбросить все is_export = 0
+                string resetQuery = "UPDATE revit_export SET is_export = 0";
+                using (SqliteCommand resetCmd = new SqliteCommand(resetQuery, connection, transaction))
+                {
+                    resetCmd.ExecuteNonQuery();
+                }
+                transaction.Commit();
+            }
+            catch (SqliteException ex)
+            {
+                if (transaction != null)
+                    transaction.Rollback();
+                LogService.LogError("Не удалось подключиться к БД" + ex);
+            }
+            catch (Exception ex)
+            {
+                if (transaction != null)
+                    transaction.Rollback();
+                LogService.LogError($"Неизвестная ошибка: {ex}");
+            }
+            finally
+            {
+                transaction?.Dispose();
+                connection?.Dispose();
+            }
+        }
     }
 }

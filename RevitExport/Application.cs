@@ -13,8 +13,6 @@ namespace RevitExport
 {
     public class ModelCleaner : IExternalApplication
     {
-        string successMessage = "";
-        string errorMessage = "";
         public Result OnShutdown(UIControlledApplication application)
         {
 
@@ -31,11 +29,14 @@ namespace RevitExport
         public void ApplicationInitialized(object sender, EventArgs e)
         {
             Application app = sender as Application;
+            
             //Document doc = null;
             LogService.Initialize("C:\\Test_download");
             LogService.LogError("инициализация прошла");
             RevitExportCommand revitExport = new RevitExportCommand();
-            revitExport.Execute(app);
+            revitExport.ExecuteScript(app);
+            
+            
         }
 
     }
@@ -153,13 +154,4 @@ namespace RevitExport
         }
     }
 
-    //public static class TransactionHandler
-    //{
-    //    public static void SetWarningResolver(Transaction transaction)
-    //    {
-    //        FailureHandlingOptions failOptions = transaction.GetFailureHandlingOptions();
-    //        failOptions.SetFailuresPreprocessor(new WarnigResolver());
-    //        transaction.SetFailureHandlingOptions(failOptions);
-    //    }
-    //}
 }

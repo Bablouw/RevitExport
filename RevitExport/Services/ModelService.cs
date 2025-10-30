@@ -50,7 +50,7 @@ namespace RevitExport.Services
                                 {
                                     doc.Delete(view);
                                 }
-                                catch (Exception ex)
+                                catch (Exception )
                                 {
                                     continue;
                                 }
@@ -105,7 +105,7 @@ namespace RevitExport.Services
                                 {
                                     doc.Delete(sheet);
                                 }
-                                catch (Exception ex)
+                                catch (Exception )
                                 {
                                     continue;
                                 }
@@ -158,7 +158,7 @@ namespace RevitExport.Services
                                 {
                                     doc.Delete(scope);
                                 }
-                                catch (Exception ex)
+                                catch (Exception )
                                 {
                                     continue;
                                 }
@@ -211,7 +211,7 @@ namespace RevitExport.Services
                             {
                                 doc.Delete(link);
                             }
-                            catch (Exception ex)
+                            catch (Exception )
                             {
                                 continue;
                             }
@@ -380,6 +380,8 @@ namespace RevitExport.Services
                 }
             }
         }
+
+
 
     }
 }

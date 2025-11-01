@@ -4,6 +4,7 @@ using RevitExport.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Application = Autodesk.Revit.ApplicationServices.Application;
@@ -29,10 +30,17 @@ namespace RevitExport
         public void ApplicationInitialized(object sender, EventArgs e)
         {
             Application app = sender as Application;
-            
+            string folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string dbTxtPath = Path.Combine(folder, "DBPath.txt");
+            string content = File.ReadAllText(dbTxtPath);
+            content = content.Replace("\\ExportDB.db", "");
             //Document doc = null;
-            LogService.Initialize("C:\\RevitExportTest");
+            LogService.Initialize(content);
             LogService.LogError("инициализация прошла");
+
+
+            //LogService.LogError($"имя файла - {dbPath}");
+
             RevitExportCommand revitExport = new RevitExportCommand();
             revitExport.ExecuteScript(app);
             

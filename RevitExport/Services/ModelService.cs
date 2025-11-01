@@ -381,7 +381,104 @@ namespace RevitExport.Services
             }
         }
 
+        public Document OpenDocumentWithWorksets(Application app, ModelPath modelPath)
+        {
+            bool saveworkset = true;
+            bool isWorkSharing = false;
 
 
+            try
+            {
+                IList<WorksetPreview> workSharingList = WorksharingUtils.GetUserWorksetInfo(modelPath);
+                isWorkSharing = workSharingList != null && workSharingList.Count > 0 ? true : false;
+            }
+            catch (Exception e)
+            { 
+                MessageBox.Show($"Ошибка проверки наличия рабочих наборов:\n {e}"); 
+            };
+
+            if (isWorkSharing)
+            {
+                OpenOptions openOptions = new OpenOptions();
+                openOptions.AllowOpeningLocalByWrongUser = true;
+                openOptions.DetachFromCentralOption = DetachFromCentralOption.DetachAndDiscardWorksets;
+
+                if (saveworkset)
+                {
+                    openOptions.DetachFromCentralOption = DetachFromCentralOption.DetachAndPreserveWorksets;
+                }
+
+                try //Попытка отключить рабочие наборы со связями для ускорения процесса
+                {
+
+                    WorksetConfiguration openConfig = new WorksetConfiguration(WorksetConfigurationOption.OpenAllWorksets);
+                    openOptions.SetOpenWorksetsConfiguration(openConfig);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Ошибка скрытия наборов в файле:\n {e}");
+                }
+
+
+                try
+                {
+                    Document doc = app.OpenDocumentFile(modelPath, openOptions);
+                    //MessageBox.Show("Файл открыт");
+                    return doc;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Ошибка открытия фйла:\n {e} ");
+                    return null;
+                }
+            }
+            else
+            {
+                try
+                {
+                    Document doc = app.OpenDocumentFile(modelPath, null);
+                    //MessageBox.Show("Файл открыт");
+                    return doc;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Ошибка открытия фйла:\n {e}");
+                    return null;
+                }
+            }
+        }
+
+        public bool ExportNWC(Document doc, string folder, string fileName)
+        {
+            try
+            {
+                FilteredElementCollector collector = new FilteredElementCollector(doc)
+                    .OfClass(typeof(View3D));
+
+                View3D navisView = collector
+                    .Cast<View3D>()
+                    .FirstOrDefault(v => v.Name == "Navisworks");
+
+                NavisworksExportOptions exportOptions = new NavisworksExportOptions();
+                doc.Export(folder, CorrectNwcFileName(fileName), exportOptions);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка экспорта: {ex.Message}");
+                LogService.LogError($"{ex.Message}");
+                return false;
+            }
+        }
+
+        public string CorrectNwcFileName(string fileName)
+        {
+            if (fileName.EndsWith(".rvt"))
+            {
+                fileName = fileName.Replace(".rvt", "");
+                return fileName;
+            }
+            return fileName;
+        }
     }
 }

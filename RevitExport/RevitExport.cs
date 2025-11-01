@@ -13,28 +13,24 @@ using Application = Autodesk.Revit.ApplicationServices.Application;
 namespace RevitExport
 {
     [Autodesk.Revit.Attributes.TransactionAttribute(Autodesk.Revit.Attributes.TransactionMode.Manual)]
-    public class RevitExportCommand : IExternalCommand
+    public class RevitExportCommand
     {
         private static int RVTversion { get; set; }
 
         static AddInId addinId = new AddInId(new Guid("D57F4F16-01B6-486D-B12E-494A12E24452"));
-        public Result Execute (ExternalCommandData commandData, ref string message, ElementSet elements)
-        {
-            var commandId = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
-            commandData.Application.PostCommand(commandId);
-            return Result.Succeeded;
-        }
+
         public Result ExecuteScript(Application app)
         {
             
             //UIDocument uidoc = commandData.Application.ActiveUIDocument;
             //Document doc = uidoc.Document;
             ParseDBService parseDBService = new ParseDBService();
+            ParseDBService.Initialize();
             LinkService linkService = new LinkService();
             ModelService modelService = new ModelService();
 #if R2021
             RVTversion = 2021;
-            string filePath = "C:\\RevitExportTest\\exportRVT2021.txt";
+            string filePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "exportRVT2021.txt";
             if (!File.Exists(filePath))
             {
                 LogService.LogError((!File.Exists(filePath)).ToString());
@@ -42,53 +38,17 @@ namespace RevitExport
             }
             File.Delete(filePath);
 #elif R2022
-    RVTversion = 2022;
-    string filePath = @"C:\RevitExportTest\exportRVT2022.txt";  // Verbatim, clean
-    LogService.LogError(RVTversion.ToString());
-    
-    if (!Directory.Exists(Path.GetDirectoryName(filePath)))
-        Directory.CreateDirectory(Path.GetDirectoryName(filePath));  // Ensure dir
-    
-    if (!File.Exists(filePath))
-    {
-        LogService.LogError($"Файл не найден: {filePath}");  // Cleaner log
-        return Result.Succeeded;
-    }
-    
-    bool deleted = false;
-    for (int attempt = 0; attempt < 3; attempt++)  // Фикс: retry loop
-    {
-        try
-        {
-            File.Delete(filePath);
-            deleted = true;
-            LogService.LogError("Файл удалён успешно");
-            break;
-        }
-        catch (IOException ioEx)
-        {
-            LogService.LogError($"Попытка {attempt + 1} failed (IO lock): {ioEx.Message}. PID Revit: {System.Diagnostics.Process.GetCurrentProcess().Id}");
-            if (attempt < 2) System.Threading.Thread.Sleep(100);  // Фикс: sleep, дай GC/Revit release
-            else
+            RVTversion = 2022;
+            string filePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "exportRVT2022.txt";
+            if (!File.Exists(filePath))
             {
-                // Force: try move to temp (если lock read-only)
-                string tempPath = Path.GetTempFileName();
-                try { File.Move(filePath, tempPath); File.Delete(tempPath); deleted = true; } catch { /* ignore */ }
+            LogService.LogError((!File.Exists(filePath)).ToString());
+                return Result.Succeeded;
             }
-        }
-        catch (Exception ex)
-        {
-            LogService.LogError($"Generic delete ex: {ex.Message}");
-        }
-    }
-    
-    if (!deleted)
-    {
-        LogService.LogError("Delete failed after retries — continue anyway?");  // Или return Failed
-    }
+            File.Delete(filePath);
 #elif R2023
             RVTversion = 2023;
-            string filePath = "C:\\RevitExportTest\\exportRVT2023.txt";
+            string filePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "exportRVT2023.txt";
             if (!File.Exists(filePath))
             {
             LogService.LogError((!File.Exists(filePath)).ToString());
@@ -97,9 +57,10 @@ namespace RevitExport
             File.Delete(filePath);
 #elif R2024
             RVTversion = 2024;
-            string filePath = "C:\\RevitExportTest\\exportRVT2024.txt";
+            string filePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "exportRVT2024.txt";
             if (!File.Exists(filePath))
             {
+            LogService.LogError((!File.Exists(filePath)).ToString());
                 return Result.Succeeded;
             }
             File.Delete(filePath);
@@ -125,7 +86,7 @@ namespace RevitExport
                     ModelPath modelPathExport;
                     LogService.LogError($"Путь к модели : {model.model_path}");
                     modelPath = ModelPathUtils.ConvertUserVisiblePathToModelPath(model.model_path);
-                    modelPathExport = ModelPathUtils.ConvertUserVisiblePathToModelPath(model.export_path + model.rvt_model_name);
+                    modelPathExport = ModelPathUtils.ConvertUserVisiblePathToModelPath((model.export_path + "/") + model.rvt_model_name);
                     LogService.LogError("2.1");
 
                     if (app == null)
@@ -145,7 +106,7 @@ namespace RevitExport
 
                     //2.3 Удалить связи
                     bool purgeAllLinks = modelService.PurgeLinks(doc);
-                    LogService.LogError("2.3");
+                    LogService.LogError($"2.3 {purgeAllLinks.ToString()}");
 
                     //2.4 Удалить виды кроме Navisworks
                     bool purgeViews = modelService.PurgeViews(doc);
@@ -192,7 +153,22 @@ namespace RevitExport
                     {
                         LogService.LogError(ex.ToString());
                     }
-                    
+                    LogService.LogError("2.11");
+                    if(model.is_export_navis == 0) continue;
+                    //2.12 Открыть очищеный документ
+                    doc = modelService.OpenDocumentWithWorksets(app, modelPathExport);
+                    LogService.LogError("2.12");
+                    // 2.13 Выгрузить NWC
+                    LogService.LogError($"путь: {model.export_path} имя файла:{model.rvt_model_name} ");
+                    bool exportNwc = modelService.ExportNWC(doc, model.export_path, model.rvt_model_name);
+                    LogService.LogError("2.13");
+                    // 2.14 Закрыть документ
+                    doc.Close(false);
+                    doc = null;
+                    if(model.is_export_revit == 0)
+                    {
+                        File.Delete(model.export_path + "\\" + model.rvt_model_name);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -206,5 +182,7 @@ namespace RevitExport
             return Result.Succeeded;
             
         }
+
+        
     }
 }

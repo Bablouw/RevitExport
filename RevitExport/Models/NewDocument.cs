@@ -9,7 +9,8 @@ namespace RevitExport.Models
 {
     public class NewDocument
     {
-        public int is_export {  get; set; }
+        public int is_export_revit {  get; set; }
+        public int is_export_navis { get; set; }
         public string rvt_model_name { get; set; }
         public int rvt_version { get; set; }
         public string export_path { get; set; }

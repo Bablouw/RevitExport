@@ -2,13 +2,14 @@
 using RevitExport.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using View = Autodesk.Revit.DB.View;
 using Application = Autodesk.Revit.ApplicationServices.Application;
+using View = Autodesk.Revit.DB.View;
 
 namespace RevitExport.Services
 {
@@ -50,7 +51,7 @@ namespace RevitExport.Services
                                 {
                                     doc.Delete(view);
                                 }
-                                catch (Exception )
+                                catch (Exception)
                                 {
                                     continue;
                                 }
@@ -105,7 +106,7 @@ namespace RevitExport.Services
                                 {
                                     doc.Delete(sheet);
                                 }
-                                catch (Exception )
+                                catch (Exception)
                                 {
                                     continue;
                                 }
@@ -158,7 +159,7 @@ namespace RevitExport.Services
                                 {
                                     doc.Delete(scope);
                                 }
-                                catch (Exception )
+                                catch (Exception)
                                 {
                                     continue;
                                 }
@@ -211,7 +212,7 @@ namespace RevitExport.Services
                             {
                                 doc.Delete(link);
                             }
-                            catch (Exception )
+                            catch (Exception)
                             {
                                 continue;
                             }
@@ -393,9 +394,10 @@ namespace RevitExport.Services
                 isWorkSharing = workSharingList != null && workSharingList.Count > 0 ? true : false;
             }
             catch (Exception e)
-            { 
-                MessageBox.Show($"Ошибка проверки наличия рабочих наборов:\n {e}"); 
-            };
+            {
+                MessageBox.Show($"Ошибка проверки наличия рабочих наборов:\n {e}");
+            }
+            ;
 
             if (isWorkSharing)
             {
@@ -480,5 +482,6 @@ namespace RevitExport.Services
             }
             return fileName;
         }
+
     }
 }

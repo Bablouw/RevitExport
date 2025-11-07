@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using Application = Autodesk.Revit.ApplicationServices.Application;
 
@@ -26,6 +27,7 @@ namespace RevitExport
             //Document doc = uidoc.Document;
             ParseDBService parseDBService = new ParseDBService();
             ParseDBService.Initialize();
+            string exportPath = "";
             LinkService linkService = new LinkService();
             ModelService modelService = new ModelService();
 #if R2021
@@ -109,20 +111,32 @@ namespace RevitExport
                     LogService.LogError($"2.3 {purgeAllLinks.ToString()}");
 
                     //2.4 Удалить виды кроме Navisworks
-                    bool purgeViews = modelService.PurgeViews(doc);
-                    LogService.LogError("2.4");
+                    if (model.is_export_revit == 1)
+                    {
+                        bool purgeViews = modelService.PurgeViews(doc);
+                        LogService.LogError("2.4");
+                    }
 
                     //2.5 Удалить листы 
-                    bool purgeSheets = modelService.PurgeSheets(doc);
-                    LogService.LogError("2.5");
+                    if (model.is_export_revit == 1)
+                    {
+                        bool purgeSheets = modelService.PurgeSheets(doc);
+                        LogService.LogError("2.5");
+                    }
 
                     //2.6 Удалить облрасти видимости
-                    bool purgeScope = modelService.PurgeScope(doc);
-                    LogService.LogError("2.6");
+                    if (model.is_export_revit == 1)
+                    {
+                        bool purgeScope = modelService.PurgeScope(doc);
+                        LogService.LogError("2.6");
+                    }
 
                     //2.7 Удалить неиспользуемое
-                    bool purheUnused = modelService.PurgeUnused(doc);
-                    LogService.LogError("2.7");
+                    if (model.is_export_revit == 1)
+                    {
+                        bool purheUnused = modelService.PurgeUnused(doc);
+                        LogService.LogError("2.7");
+                    }
 
                     //2.8 Сохранить документ 
                     LogService.LogError(model.export_path + "\\" + model.rvt_model_name);
@@ -165,10 +179,17 @@ namespace RevitExport
                     // 2.14 Закрыть документ
                     doc.Close(false);
                     doc = null;
-                    if(model.is_export_revit == 0)
+                    //2.15 Удалить Backup'ы
+                    foreach (var dir in Directory.GetDirectories(model.export_path, "*backup*", SearchOption.TopDirectoryOnly)
+                        .Where(d => d.ToLower().Contains("backup")))
+                    {
+                        Directory.Delete(dir, true);
+                    }
+                    if (model.is_export_revit == 0)
                     {
                         File.Delete(model.export_path + "\\" + model.rvt_model_name);
                     }
+                   exportPath = model.export_path;
                 }
                 catch (Exception ex)
                 {
@@ -177,7 +198,9 @@ namespace RevitExport
                     //doc = null;
                 }
             }
-
+            //2.16 Создать nwd
+            //modelService.CreateNWD(exportPath);
+            //2.17 Закрыть ревит
             Process.GetCurrentProcess().Kill();
             return Result.Succeeded;
             

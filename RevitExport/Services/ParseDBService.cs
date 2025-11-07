@@ -35,9 +35,9 @@ namespace RevitExport.Services
                 connection.Open();
 
                 const string query = @"
-        SELECT is_export_revit, is_export_navis, rvt_model_name, rvt_version, export_path, model_path 
-        FROM revit_export
-        WHERE rvt_version = @RVTversion";
+    SELECT is_export_revit, is_export_navis, rvt_model_name, rvt_version, export_path, model_path
+    FROM revit_export
+    WHERE rvt_version = @RVTversion AND (is_export_revit = 1 OR is_export_navis = 1)";
 
                 command = new SqliteCommand(query, connection);
                 command.Parameters.AddWithValue("@RVTversion", RVTversion); // ✅ добавляем после создания команды

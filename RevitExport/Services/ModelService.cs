@@ -41,7 +41,7 @@ namespace RevitExport.Services
                         HashSet<string> errors = new HashSet<string>();
                         using (Transaction t = new Transaction(doc, "Очистка видов"))
                         {
-                            t.SetFailureHandlingOptions(t.GetFailureHandlingOptions().SetFailuresPreprocessor(new WarnigResolver()));
+                            t.SetFailureHandlingOptions(t.GetFailureHandlingOptions().SetFailuresPreprocessor(new WarningResolver()));
                             int completed = 0;
                             t.Start();
                             foreach (ElementId view in viewsToDelete)
@@ -94,7 +94,7 @@ namespace RevitExport.Services
                     {
                         using (Transaction t = new Transaction(doc, "Очистка листов"))
                         {
-                            t.SetFailureHandlingOptions(t.GetFailureHandlingOptions().SetFailuresPreprocessor(new WarnigResolver()));
+                            t.SetFailureHandlingOptions(t.GetFailureHandlingOptions().SetFailuresPreprocessor(new WarningResolver()));
                             int completed = 0;
                             t.Start();
 
@@ -149,7 +149,7 @@ namespace RevitExport.Services
                         HashSet<string> errors = new HashSet<string>();
                         using (Transaction t = new Transaction(doc, "Удладаление областей видимости"))
                         {
-                            t.SetFailureHandlingOptions(t.GetFailureHandlingOptions().SetFailuresPreprocessor(new WarnigResolver()));
+                            t.SetFailureHandlingOptions(t.GetFailureHandlingOptions().SetFailuresPreprocessor(new WarningResolver()));
                             int completed = 0;
                             t.Start();
                             foreach (ElementId scope in scopeToDelited)
@@ -204,7 +204,7 @@ namespace RevitExport.Services
                 {
                     using (Transaction t = new Transaction(doc, "Очистка связей"))
                     {
-                        t.SetFailureHandlingOptions(t.GetFailureHandlingOptions().SetFailuresPreprocessor(new WarnigResolver()));
+                        t.SetFailureHandlingOptions(t.GetFailureHandlingOptions().SetFailuresPreprocessor(new WarningResolver()));
                         t.Start();
                         foreach (ElementId link in allLinks)
                         {
@@ -459,9 +459,12 @@ namespace RevitExport.Services
 
                 View3D navisView = collector
                     .Cast<View3D>()
+                    .Where(v => v.IsTemplate == false)
                     .FirstOrDefault(v => v.Name == "Navisworks");
 
                 NavisworksExportOptions exportOptions = new NavisworksExportOptions();
+                exportOptions.ExportScope = NavisworksExportScope.View;
+                exportOptions.ViewId = navisView.Id;
                 doc.Export(folder, CorrectNwcFileName(fileName), exportOptions);
                 return true;
             }

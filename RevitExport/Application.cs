@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Controls;
 using Application = Autodesk.Revit.ApplicationServices.Application;
 using View = Autodesk.Revit.DB.View;
 
@@ -48,7 +49,7 @@ namespace RevitExport
         }
 
     }
-    public class WarnigResolver : IFailuresPreprocessor
+    public class WarningResolver : IFailuresPreprocessor
     {
         // Словарь известных ошибок (GUID -> действие)
         private static readonly Dictionary<Guid, Action<FailuresAccessor, FailureMessageAccessor>> KnownFailures =
@@ -60,7 +61,13 @@ namespace RevitExport
                 { Guid.Parse("a359f2bb-aaa4-47dc-b33b-177a073698a8"), (a,f) => a.DeleteWarning(f) }, // Удалён сегмент размера
                 { Guid.Parse("8695a52f-2a88-4ca2-bedc-3676d5857af6"), (a,f) => a.DeleteWarning(f) }, // Выделенные перекрытия пересекаются
                 { Guid.Parse("249aaf1d-3f4b-4f27-a67a-c45a9d888cf7"), (a,f) => a.DeleteWarning(f) },// Расчеты Помещение удовлетворительны только без учета следующих параметров
-                { Guid.Parse("c3aa4692-975c-4720-8cb4-389532cf43a4"), (a,f) => a.DeleteWarning(f) } // Мониторинг координации
+                { Guid.Parse("c3aa4692-975c-4720-8cb4-389532cf43a4"), (a,f) => a.DeleteWarning(f) },
+                { Guid.Parse("f654a048-6a1d-4456-ab83-1ec1b5203f7a"), (a,f) => a.DeleteWarning(f) },// какая то ошибка в эом
+                { Guid.Parse("cbd5deb4-c4a3-4b95-abfe-7eeb9dc3f06c"), (a,f) => a.DeleteWarning(f) }, // Помещение не окржуено
+                { Guid.Parse("a22de05c-4c92-4bdc-9ce3-a965d2cf316c"), (a,f) => a.DeleteWarning(f) }, //Перекрытие объемов Помещение. Скорректируйте свойства "Верхний предел" и "Смещение предела" Помещения.
+                { Guid.Parse("b44c8ba0-7a86-44c1-bbf1-2de8e2017266"), (a,f) => a.DeleteWarning(f) }, //Один или несколько опорных элементов размеров сейчас некорректны.
+                { Guid.Parse("8a9ff20d-fdc2-4f98-87e6-2aa8b71b0c83"), (a,f) => a.DeleteWarning(f) } //Один или несколько опорных элементов размеров сейчас некорректны.
+
             };
 
         public FailureProcessingResult PreprocessFailures(FailuresAccessor accessor)
@@ -125,6 +132,7 @@ namespace RevitExport
                 $"Описание: {description}\n\n" +
                 $"Добавьте этот GUID в словарь KnownFailures");
 
+            LogService.LogError($"Добавьте этот GUID в словарь {id.Guid}");
             //// Логирование в файл
             //try
             //{

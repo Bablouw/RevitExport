@@ -17,7 +17,7 @@ namespace RevitExport.Services
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string dbTxtPath = Path.Combine(folder, "DBPath.txt");
             string dbPath = File.ReadAllText(dbTxtPath);
-            LogService.LogError($"текст из файла:{dbPath}, а вмсе вместе получается:Data Source={dbPath}");
+            LogService.LogError($"текст из файла:{dbPath}, а все вместе получается:Data Source={dbPath}");
             ConnectionString = $"Data Source={dbPath}";
         }
 
@@ -35,7 +35,7 @@ namespace RevitExport.Services
                 connection.Open();
 
                 const string query = @"
-    SELECT is_export_revit, is_export_navis, rvt_model_name, rvt_version, export_path, model_path
+    SELECT is_export_revit, is_export_navis, purify, rvt_model_name, rvt_version, export_path, model_path
     FROM revit_export
     WHERE rvt_version = @RVTversion AND (is_export_revit = 1 OR is_export_navis = 1)";
 
@@ -51,6 +51,7 @@ namespace RevitExport.Services
                         is_export_revit = reader.GetInt32(reader.GetOrdinal("is_export_revit")),
                         is_export_navis = reader.GetInt32(reader.GetOrdinal("is_export_navis")),
                         rvt_model_name = reader.GetString(reader.GetOrdinal("rvt_model_name")),
+                        purify = reader.GetInt32(reader.GetOrdinal("purify")),
                         rvt_version = reader.GetInt32(reader.GetOrdinal("rvt_version")),
                         export_path = reader.IsDBNull(reader.GetOrdinal("export_path"))
                             ? null
@@ -98,7 +99,7 @@ namespace RevitExport.Services
                 transaction = connection.BeginTransaction();
 
                 // 1. Сбросить все is_export = 0
-                string resetQuery = "UPDATE revit_export SET is_export_revit = 0, is_export_navis = 0";
+                string resetQuery = "UPDATE revit_export SET is_export_revit = 0, is_export_navis = 0, purify = 0";
                 using (SqliteCommand resetCmd = new SqliteCommand(resetQuery, connection, transaction))
                 {
                     resetCmd.ExecuteNonQuery();

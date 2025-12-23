@@ -105,39 +105,39 @@ namespace RevitExport
                     if (doc == null)
                     { continue; }
                     LogService.LogError("2.2");
-
+                    
                     //2.3 Удалить связи
                     bool purgeAllLinks = modelService.PurgeLinks(doc);
                     LogService.LogError($"2.3 {purgeAllLinks.ToString()}");
 
                     //2.4 Удалить виды кроме Navisworks
-                    if (model.is_export_revit == 1)
+                    if (model.purify == 1)
                     {
                         bool purgeViews = modelService.PurgeViews(doc);
                         LogService.LogError("2.4");
                     }
 
                     //2.5 Удалить листы 
-                    if (model.is_export_revit == 1)
+                    if (model.purify == 1)
                     {
                         bool purgeSheets = modelService.PurgeSheets(doc);
                         LogService.LogError("2.5");
                     }
 
                     //2.6 Удалить облрасти видимости
-                    if (model.is_export_revit == 1)
+                    if (model.purify == 1)
                     {
                         bool purgeScope = modelService.PurgeScope(doc);
                         LogService.LogError("2.6");
                     }
 
                     //2.7 Удалить неиспользуемое
-                    if (model.is_export_revit == 1)
+                    if (model.purify == 1)
                     {
                         bool purheUnused = modelService.PurgeUnused(doc);
                         LogService.LogError("2.7");
                     }
-
+                    
                     //2.8 Сохранить документ 
                     LogService.LogError(model.export_path + "\\" + model.rvt_model_name);
                     bool saveNewDoc = modelService.SaveNewDoc(doc, modelPathExport);

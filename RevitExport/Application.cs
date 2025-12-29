@@ -66,7 +66,9 @@ namespace RevitExport
                 { Guid.Parse("cbd5deb4-c4a3-4b95-abfe-7eeb9dc3f06c"), (a,f) => a.DeleteWarning(f) }, // Помещение не окржуено
                 { Guid.Parse("a22de05c-4c92-4bdc-9ce3-a965d2cf316c"), (a,f) => a.DeleteWarning(f) }, //Перекрытие объемов Помещение. Скорректируйте свойства "Верхний предел" и "Смещение предела" Помещения.
                 { Guid.Parse("b44c8ba0-7a86-44c1-bbf1-2de8e2017266"), (a,f) => a.DeleteWarning(f) }, //Один или несколько опорных элементов размеров сейчас некорректны.
-                { Guid.Parse("8a9ff20d-fdc2-4f98-87e6-2aa8b71b0c83"), (a,f) => a.DeleteWarning(f) } //Один или несколько опорных элементов размеров сейчас некорректны.
+                { Guid.Parse("8a9ff20d-fdc2-4f98-87e6-2aa8b71b0c83"), (a,f) => a.DeleteWarning(f) }, //Один или несколько опорных элементов размеров сейчас некорректны.
+                { Guid.Parse("e431b9e1-9a4d-469f-81b3-51432f904a65"), (a,f) => a.DeleteWarning(f) } // Выделенная геометрия больше не описывает плоскость
+                
 
             };
 
